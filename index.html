@@ -1,256 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TWA Calculator</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align to start to allow scrolling if content is tall */
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .container {
-            max-width: 900px;
-            width: 100%;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield; /* Firefox */
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f0f4f8; /* Light blue-gray background */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start; /* Align to start to allow scrolling if content is tall */
+        min-height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .container {
+        max-width: 900px;
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield; /* Firefox */
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <!-- Title -->
-        <h1 class="text-3xl font-bold text-left text-gray-800 mb-6">8 Hour Workplace Exposure Limit TWA Calculator</h1>
-        <p class="text-lg">Add your sample data and when ready press calculate to display your TWA.</p>
+      <!-- Title -->
+      <h1 class="text-3xl font-bold text-left text-gray-800 mb-6">
+        8 Hour Workplace Exposure Limit TWA Calculator
+      </h1>
+      <p class="text-lg">
+        Add your sample data and when ready press calculate to display your TWA.
+      </p>
 
-        <!-- Sample Input Section -->
-        <div class="p-6 bg-blue-50 rounded-lg shadow-sm">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Add Sample</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="concentration" class="block text-sm font-medium text-gray-700 mb-1">Concentration (e.g., ppm, mg/m³)</label>
-                    <input type="number" id="concentration" placeholder="e.g., 50" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                </div>
-                <div>
-                    <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Duration (minutes)</label>
-                    <input type="number" id="duration" placeholder="e.g., 4" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm">
-                </div>
-            </div>
-            <button id="addSampleBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">Add Sample</button>
+      <!-- Sample Input Section -->
+      <div class="p-6 bg-blue-50 rounded-lg shadow-sm">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Add Sample</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label
+              for="concentration"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Concentration (e.g., ppm, mg/m³)</label
+            >
+            <input
+              type="number"
+              id="concentration"
+              placeholder="e.g., 50"
+              class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+            />
+          </div>
+          <div>
+            <label
+              for="duration"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Duration (minutes)</label
+            >
+            <input
+              type="number"
+              id="duration"
+              placeholder="e.g., 4"
+              class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+            />
+          </div>
         </div>
+        <button
+          id="addSampleBtn"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
+        >
+          Add Sample
+        </button>
+      </div>
 
-        <!-- Samples List Section -->
-        <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Added Samples</h2>
-            <div id="messageBox" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                <strong class="font-bold">Error:</strong>
-                <span class="block sm:inline" id="messageText"></span>
-                <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="document.getElementById('messageBox').classList.add('hidden')">
-                    <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.15a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.029a1.2 1.2 0 1 1 1.697 1.697L11.819 10l3.029 2.651a1.2 1.2 0 0 1 0 1.698z"/></svg>
-                </span>
-            </div>
-            <div id="samplesList" class="overflow-x-auto">
-                <table class="min-w-full bg-white rounded-md shadow-sm">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                            <th class="py-3 px-6 text-left rounded-tl-md">Concentration</th>
-                            <th class="py-3 px-6 text-left">Duration (minutes)</th>
-                            <th class="py-3 px-6 text-center rounded-tr-md">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-600 text-sm font-light" id="samplesTableBody">
-                        <!-- Samples will be added here by JavaScript -->
-                    </tbody>
-                </table>
-                <p id="noSamplesMessage" class="text-gray-500 text-center py-4 hidden">No samples added yet.</p>
-            </div>
+      <!-- Samples List Section -->
+      <div class="p-6 bg-gray-50 rounded-lg shadow-sm">
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Added Samples</h2>
+        <div
+          id="messageBox"
+          class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong class="font-bold">Error:</strong>
+          <span class="block sm:inline" id="messageText"></span>
+          <span
+            class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
+            onclick="document.getElementById('messageBox').classList.add('hidden')"
+          >
+            <svg
+              class="fill-current h-6 w-6 text-red-500"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <title>Close</title>
+              <path
+                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.15a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.029a1.2 1.2 0 1 1 1.697 1.697L11.819 10l3.029 2.651a1.2 1.2 0 0 1 0 1.698z"
+              />
+            </svg>
+          </span>
         </div>
+        <div id="samplesList" class="overflow-x-auto">
+          <table class="min-w-full bg-white rounded-md shadow-sm">
+            <thead>
+              <tr
+                class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal"
+              >
+                <th class="py-3 px-6 text-left rounded-tl-md">Concentration</th>
+                <th class="py-3 px-6 text-left">Duration (minutes)</th>
+                <th class="py-3 px-6 text-center rounded-tr-md">Actions</th>
+              </tr>
+            </thead>
+            <tbody
+              class="text-gray-600 text-sm font-light"
+              id="samplesTableBody"
+            >
+              <!-- Samples will be added here by JavaScript -->
+            </tbody>
+          </table>
+          <p
+            id="noSamplesMessage"
+            class="text-gray-500 text-center py-4 hidden"
+          >
+            No samples added yet.
+          </p>
+        </div>
+      </div>
 
-        <!-- Calculate and Result Section -->
-        <div class="p-6 bg-green-50 rounded-lg shadow-sm flex flex-col items-center">
-            <button id="calculateTwaBtn" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4">Calculate 8-Hour TWA</button>
-            <div id="twaResult" class="text-2xl font-bold text-gray-800">
-                <!-- TWA result will be displayed here -->
-            </div>
+      <!-- Calculate and Result Section -->
+      <div
+        class="p-6 bg-green-50 rounded-lg shadow-sm flex flex-col items-center"
+      >
+        <button
+          id="calculateTwaBtn"
+          class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 mb-4"
+        >
+          Calculate 8-Hour TWA
+        </button>
+        <div id="twaResult" class="text-2xl font-bold text-gray-800">
+          <!-- TWA result will be displayed here -->
         </div>
+      </div>
     </div>
 
     <script>
-        // Array to store sample data
-        let samples = [];
+      // Array to store sample data
+      let samples = [];
 
-        // Get DOM elements
-        const concentrationInput = document.getElementById('concentration');
-        const durationInput = document.getElementById('duration');
-        const addSampleBtn = document.getElementById('addSampleBtn');
-        const samplesTableBody = document.getElementById('samplesTableBody');
-        const calculateTwaBtn = document.getElementById('calculateTwaBtn');
-        const twaResultDiv = document.getElementById('twaResult');
-        const noSamplesMessage = document.getElementById('noSamplesMessage');
-        const messageBox = document.getElementById('messageBox');
-        const messageText = document.getElementById('messageText');
+      // Get DOM elements
+      const concentrationInput = document.getElementById("concentration");
+      const durationInput = document.getElementById("duration");
+      const addSampleBtn = document.getElementById("addSampleBtn");
+      const samplesTableBody = document.getElementById("samplesTableBody");
+      const calculateTwaBtn = document.getElementById("calculateTwaBtn");
+      const twaResultDiv = document.getElementById("twaResult");
+      const noSamplesMessage = document.getElementById("noSamplesMessage");
+      const messageBox = document.getElementById("messageBox");
+      const messageText = document.getElementById("messageText");
 
-        /**
-         * Displays a message in the message box.
-         * @param {string} message - The message to display.
-         * @param {string} type - The type of message (e.g., 'error', 'success').
-         */
-        function showMessage(message, type = 'error') {
-            messageText.textContent = message;
-            messageBox.classList.remove('hidden');
-            if (type === 'error') {
-                messageBox.classList.remove('bg-green-100', 'border-green-400', 'text-green-700');
-                messageBox.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-            } else if (type === 'success') {
-                messageBox.classList.remove('bg-red-100', 'border-red-400', 'text-red-700');
-                messageBox.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
-            }
+      /**
+       * Displays a message in the message box.
+       * @param {string} message - The message to display.
+       * @param {string} type - The type of message (e.g., 'error', 'success').
+       */
+      function showMessage(message, type = "error") {
+        messageText.textContent = message;
+        messageBox.classList.remove("hidden");
+        if (type === "error") {
+          messageBox.classList.remove(
+            "bg-green-100",
+            "border-green-400",
+            "text-green-700"
+          );
+          messageBox.classList.add(
+            "bg-red-100",
+            "border-red-400",
+            "text-red-700"
+          );
+        } else if (type === "success") {
+          messageBox.classList.remove(
+            "bg-red-100",
+            "border-red-400",
+            "text-red-700"
+          );
+          messageBox.classList.add(
+            "bg-green-100",
+            "border-green-400",
+            "text-green-700"
+          );
         }
+      }
 
-        /**
-         * Clears the message box.
-         */
-        function clearMessage() {
-            messageBox.classList.add('hidden');
-            messageText.textContent = '';
+      /**
+       * Clears the message box.
+       */
+      function clearMessage() {
+        messageBox.classList.add("hidden");
+        messageText.textContent = "";
+      }
+
+      /**
+       * Renders the list of samples in the table.
+       */
+      function renderSamples() {
+        samplesTableBody.innerHTML = ""; // Clear existing rows
+        if (samples.length === 0) {
+          noSamplesMessage.classList.remove("hidden");
+          return;
         }
+        noSamplesMessage.classList.add("hidden");
 
-        /**
-         * Renders the list of samples in the table.
-         */
-        function renderSamples() {
-            samplesTableBody.innerHTML = ''; // Clear existing rows
-            if (samples.length === 0) {
-                noSamplesMessage.classList.remove('hidden');
-                return;
-            }
-            noSamplesMessage.classList.add('hidden');
+        samples.forEach((sample, index) => {
+          const row = document.createElement("tr");
+          row.classList.add("border-b", "border-gray-200", "hover:bg-gray-100");
 
-            samples.forEach((sample, index) => {
-                const row = document.createElement('tr');
-                row.classList.add('border-b', 'border-gray-200', 'hover:bg-gray-100');
-
-                row.innerHTML = `
+          row.innerHTML = `
                     <td class="py-3 px-6 text-left whitespace-nowrap rounded-bl-md">${sample.concentration}</td>
                     <td class="py-3 px-6 text-left">${sample.duration}</td>
                     <td class="py-3 px-6 text-center rounded-br-md">
                         <button data-index="${index}" class="delete-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-xs font-semibold transition duration-300 ease-in-out">Delete</button>
                     </td>
                 `;
-                samplesTableBody.appendChild(row);
-            });
-
-            // Add event listeners to delete buttons
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const indexToDelete = parseInt(event.target.dataset.index);
-                    deleteSample(indexToDelete);
-                });
-            });
-        }
-
-        /**
-         * Adds a new sample to the list.
-         */
-        function addSample() {
-            clearMessage();
-            const concentration = parseFloat(concentrationInput.value);
-            const duration = parseFloat(durationInput.value);
-
-            // Input validation
-            if (isNaN(concentration) || isNaN(duration) || concentration <= 0 || duration <= 0) {
-                showMessage('Please enter valid positive numbers for both concentration and duration.');
-                return;
-            }
-
-            samples.push({ concentration, duration });
-            renderSamples();
-
-            // Clear input fields after adding
-            concentrationInput.value = '';
-            durationInput.value = '';
-            concentrationInput.focus(); // Keep focus for quick entry
-        }
-
-        /**
-         * Deletes a sample from the list by its index.
-         * @param {number} index - The index of the sample to delete.
-         */
-        function deleteSample(index) {
-            clearMessage();
-            samples.splice(index, 1); // Remove the sample at the given index
-            renderSamples(); // Re-render the table
-            twaResultDiv.textContent = ''; // Clear previous TWA result
-        }
-
-        /**
-         * Calculates the 8-hour Time-Weighted Average (TWA).
-         * Formula: TWA = (C1*T1 + C2*T2 + ... + Cn*Tn) / 480 minutes
-         * Where C = concentration, T = duration.
-         * If total duration is less than 8 hours, the remaining time is considered zero exposure.
-         */
-        function calculateTWA() {
-            clearMessage();
-            if (samples.length === 0) {
-                showMessage('Please add at least one sample to calculate TWA.', 'error');
-                twaResultDiv.textContent = '';
-                return;
-            }
-
-            let sumOfProducts = 0;
-            let totalDuration = 0;
-
-            samples.forEach(sample => {
-                sumOfProducts += sample.concentration * sample.duration;
-                totalDuration += sample.duration;
-            });
-
-            // The denominator for 8-hour TWA is always 8 hours, regardless of total sampling duration.
-            // If totalDuration < 8, the remaining time is assumed to be zero exposure.
-            const twa = sumOfProducts / 480;
-
-            twaResultDiv.innerHTML = `8-Hour TWA: <span class="text-blue-700">${twa.toFixed(2)}</span>`; // Display with 3 decimal places
-        }
-
-        // Event Listeners
-        addSampleBtn.addEventListener('click', addSample);
-        calculateTwaBtn.addEventListener('click', calculateTWA);
-
-        // Allow adding sample by pressing Enter in input fields
-        concentrationInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                addSample();
-            }
-        });
-        durationInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                addSample();
-            }
+          samplesTableBody.appendChild(row);
         });
 
-        // Initial render to show "No samples added yet."
+        // Add event listeners to delete buttons
+        document.querySelectorAll(".delete-btn").forEach((button) => {
+          button.addEventListener("click", (event) => {
+            const indexToDelete = parseInt(event.target.dataset.index);
+            deleteSample(indexToDelete);
+          });
+        });
+      }
+
+      /**
+       * Adds a new sample to the list.
+       */
+      function addSample() {
+        clearMessage();
+        const concentration = parseFloat(concentrationInput.value);
+        const duration = parseFloat(durationInput.value);
+
+        // Input validation
+        if (
+          isNaN(concentration) ||
+          isNaN(duration) ||
+          concentration <= 0 ||
+          duration <= 0
+        ) {
+          showMessage(
+            "Please enter valid positive numbers for both concentration and duration."
+          );
+          return;
+        }
+
+        samples.push({ concentration, duration });
         renderSamples();
+
+        // Clear input fields after adding
+        concentrationInput.value = "";
+        durationInput.value = "";
+        concentrationInput.focus(); // Keep focus for quick entry
+      }
+
+      /**
+       * Deletes a sample from the list by its index.
+       * @param {number} index - The index of the sample to delete.
+       */
+      function deleteSample(index) {
+        clearMessage();
+        samples.splice(index, 1); // Remove the sample at the given index
+        renderSamples(); // Re-render the table
+        twaResultDiv.textContent = ""; // Clear previous TWA result
+      }
+
+      /**
+       * Calculates the 8-hour Time-Weighted Average (TWA).
+       * Formula: TWA = (C1*T1 + C2*T2 + ... + Cn*Tn) / 480 minutes
+       * Where C = concentration, T = duration.
+       * If total duration is less than 8 hours, the remaining time is considered zero exposure.
+       */
+      function calculateTWA() {
+        clearMessage();
+        if (samples.length === 0) {
+          showMessage(
+            "Please add at least one sample to calculate TWA.",
+            "error"
+          );
+          twaResultDiv.textContent = "";
+          return;
+        }
+
+        let sumOfProducts = 0;
+        let totalDuration = 0;
+
+        samples.forEach((sample) => {
+          sumOfProducts += sample.concentration * sample.duration;
+          totalDuration += sample.duration;
+        });
+
+        // The denominator for 8-hour TWA is always 8 hours, regardless of total sampling duration.
+        // If totalDuration < 8, the remaining time is assumed to be zero exposure.
+        const twa = sumOfProducts / 480;
+
+        twaResultDiv.innerHTML = `8-Hour TWA: <span class="text-blue-700">${twa.toFixed(
+          2
+        )}</span>`; // Display with 3 decimal places
+      }
+
+      // Event Listeners
+      addSampleBtn.addEventListener("click", addSample);
+      calculateTwaBtn.addEventListener("click", calculateTWA);
+
+      // Allow adding sample by pressing Enter in input fields
+      concentrationInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          addSample();
+        }
+      });
+      durationInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          addSample();
+        }
+      });
+
+      // Initial render to show "No samples added yet."
+      renderSamples();
+
+      // Send height for Parent iframe
+      function sendHeight() {
+        const height = document.body.scrollHeight;
+        window.parent.postMessage({ iframeHeight: height }, "*");
+      }
+
+      window.onload = sendHeight;
+      window.onresize = sendHeight;
     </script>
-</body>
+  </body>
 </html>
