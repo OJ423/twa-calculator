@@ -245,6 +245,7 @@
             deleteSample(indexToDelete);
           });
         });
+        sendHeight();
       }
 
       /**
@@ -265,6 +266,7 @@
           showMessage(
             "Please enter valid positive numbers for both concentration and duration."
           );
+          sendHeight();
           return;
         }
 
@@ -286,6 +288,7 @@
         samples.splice(index, 1); // Remove the sample at the given index
         renderSamples(); // Re-render the table
         twaResultDiv.textContent = ""; // Clear previous TWA result
+        sendHeight()
       }
 
       /**
@@ -302,6 +305,7 @@
             "error"
           );
           twaResultDiv.textContent = "";
+          sendHeight();
           return;
         }
 
@@ -320,6 +324,7 @@
         twaResultDiv.innerHTML = `8-Hour TWA: <span class="text-blue-700">${twa.toFixed(
           2
         )}</span>`; // Display with 3 decimal places
+        sendHeight();
       }
 
       // Event Listeners
